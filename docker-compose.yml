@@ -1,0 +1,45 @@
+version: '3'
+services:
+  app:
+    build:
+      context: ./app
+      dockerfile: ./Dockerfile
+    volumes:
+      - ./app:/app:cached
+    ports:
+      - 8080:8080
+    tty: true
+    networks:
+      local:
+        aliases:
+          - app.com
+  admin:
+    build:
+      context: ./admin
+      dockerfile: ./Dockerfile
+    ports:
+      - 9000:9000
+    volumes:
+      - ./admin:/app:cached
+    tty: true
+    networks:
+      local:
+  db:
+    restart: always
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_general_ci --innodb_large_prefix=1 --innodb_file_per_table=1 --innodb_file_format=Barracuda --innodb_file_format_max=Barracuda
+    image: mysql:latest
+    volumes:
+      - ./mysql:/var/lib/mysql
+    environment:
+      MYSQL_USER: root
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'true'
+      MYSQL_DATABASE: ec-concier-chat
+    ports:
+      - "3306:3306"
+networks:
+  local:
+    driver: bridge
+    ipam:
+     driver: default
+     config:
+       - subnet: 172.31.0.0/24
