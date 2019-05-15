@@ -14,4 +14,4 @@
 /admin/build
 /admin/node_modules
 /app/vendor
-/mysql
+/postgres
