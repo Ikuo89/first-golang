@@ -6,6 +6,7 @@ import (
   // "os"
   "time"
   "net/http"
+  "github.com/gin-contrib/cors"
   "github.com/gin-gonic/gin"
   "gopkg.in/olahol/melody.v1"
   "github.com/jinzhu/gorm"
@@ -22,6 +23,8 @@ type Users []User
 func main() {
   r := gin.Default()
   m := melody.New()
+
+  r.Use(cors.Default())
 
   db, err := gorm.Open("postgres", "host=db user=root password=root dbname=ec_concier_chat sslmode=disable")
   if err != nil {
@@ -50,6 +53,7 @@ func main() {
     now := time.Now()
     data.CreatedAt = now
     data.UpdatedAt = now
+    data.Name = "testUser"
 
     if err := c.BindJSON(&data); err != nil {
       c.String(http.StatusBadRequest, "Request is failed: "+err.Error())
@@ -73,6 +77,28 @@ func main() {
 
     db.Where("ID = ?", id).First(&user)
     c.JSON(http.StatusOK, user)
+  })
+
+  MConnections := map[string]*melody.Melody{}
+  r.GET("/users/:id/ws", func(c *gin.Context) {
+    user := User{}
+    id := c.Param("id")
+
+    db.Where("ID = ?", id).First(&user)
+
+    mc, ok := MConnections[id]
+    if ok {
+
+    } else {
+      mc = melody.New()
+      MConnections[id] = mc
+
+      mc.HandleMessage(func(s *melody.Session, msg []byte) {
+        mc.Broadcast(msg)
+      })
+    }
+
+    mc.HandleRequest(c.Writer, c.Request)
   })
 
   r.PUT("/users/:id", func(c *gin.Context) {

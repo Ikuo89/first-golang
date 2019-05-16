@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>WebSocket Sample</h1>
+    <h1>WebSocket User</h1>
     <b-form-input v-model="sendText"></b-form-input>
     <b-button @click="send">Send</b-button>
     <b-form-textarea readonly v-model="socketResponse" rows="20"></b-form-textarea>
@@ -9,12 +9,13 @@
 
 <script>
 export default {
-  name: 'WebSocketSample',
+  name: 'UserWebSocket',
   data () {
     return {
       sendText: '',
       socketResponse: '',
-      sock: null
+      sock: null,
+      userID: null
     }
   },
   methods: {
@@ -24,14 +25,14 @@ export default {
     }
   },
   mounted: function () {
-    this.sock = new WebSocket('ws://localhost:8080/ws')
+    this.userID = this.$route.params.id
+    this.sock = new WebSocket('ws://localhost:8080/users/' + this.userID + '/ws')
 
-    this.sock.addEventListener('open', function (e) {
-      console.log('Socket Connected')
+    this.sock.addEventListener('open', (e) => {
+      console.log('Socket Connected: ' + this.userID)
     })
 
     this.sock.addEventListener('message', (e) => {
-      console.log(this.socketResponse)
       console.log(e.data)
       this.socketResponse += e.data + '\n'
     })
