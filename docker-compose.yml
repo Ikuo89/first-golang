@@ -3,9 +3,8 @@ services:
   app:
     build:
       context: ./app
-      dockerfile: ./Dockerfile
     volumes:
-      - ./app:/go/src/project:cached
+      - ./app:/go/src/github.com/projects/app:cached
     ports:
       - 8080:8080
     tty: true
@@ -16,7 +15,6 @@ services:
   admin:
     build:
       context: ./admin
-      dockerfile: ./Dockerfile
     ports:
       - 9000:9000
     volumes:
@@ -31,6 +29,7 @@ services:
     environment:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: root
+      POSTGRES_DB: chat
       POSTGRES_INITDB_ARGS: "--encoding=UTF-8"
     ports:
       - "5432:5432"

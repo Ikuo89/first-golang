@@ -11,14 +11,8 @@ import (
   "gopkg.in/olahol/melody.v1"
   "github.com/jinzhu/gorm"
   _ "github.com/lib/pq"
+  "github.com/projects/app/models"
 )
-
-type User struct {
-  gorm.Model
-  Name string `json:"name"`
-}
-
-type Users []User
 
 func main() {
   r := gin.Default()
@@ -26,12 +20,12 @@ func main() {
 
   r.Use(cors.Default())
 
-  db, err := gorm.Open("postgres", "host=db user=root password=root dbname=ec_concier_chat sslmode=disable")
+  db, err := gorm.Open("postgres", "host=db user=root password=root dbname=chat sslmode=disable")
   if err != nil {
     panic(err.Error())
   }
   defer db.Close()
-  db.AutoMigrate(User{})
+  db.AutoMigrate(models.User{})
   db.LogMode(true)
 
   r.GET("/", func(c *gin.Context) {
@@ -49,14 +43,14 @@ func main() {
   })
 
   r.POST("/users", func(c *gin.Context) {
-    data := User{}
+    data := models.User{}
     now := time.Now()
     data.CreatedAt = now
     data.UpdatedAt = now
-    data.Name = "testUser"
 
     if err := c.BindJSON(&data); err != nil {
-      c.String(http.StatusBadRequest, "Request is failed: "+err.Error())
+      c.JSON(http.StatusBadRequest, map[string]string{"message": err.Error()})
+      return
     }
     db.NewRecord(data)
     db.Create(&data)
@@ -66,13 +60,13 @@ func main() {
   })
 
   r.GET("/users", func(c *gin.Context) {
-    users := []User{}
+    users := []models.User{}
     db.Find(&users)
     c.JSON(http.StatusOK, users)
   })
 
   r.GET("/users/:id", func(c *gin.Context) {
-    user := User{}
+    user := models.User{}
     id := c.Param("id")
 
     db.Where("ID = ?", id).First(&user)
@@ -81,7 +75,7 @@ func main() {
 
   MConnections := map[string]*melody.Melody{}
   r.GET("/users/:id/ws", func(c *gin.Context) {
-    user := User{}
+    user := models.User{}
     id := c.Param("id")
 
     db.Where("ID = ?", id).First(&user)
@@ -102,10 +96,10 @@ func main() {
   })
 
   r.PUT("/users/:id", func(c *gin.Context) {
-    user := User{}
+    user := models.User{}
     id := c.Param("id")
 
-    data := User{}
+    data := models.User{}
     if err := c.BindJSON(&data); err != nil {
       c.String(http.StatusBadRequest, "Request is failed: "+err.Error())
     }
@@ -114,7 +108,7 @@ func main() {
   })
 
   r.DELETE("/users/:id", func(c *gin.Context) {
-    user := User{}
+    user := models.User{}
     id := c.Param("id")
 
     db.Where("ID = ?", id).Delete(&user)

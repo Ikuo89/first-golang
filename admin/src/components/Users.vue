@@ -8,6 +8,7 @@
         </router-link>
       </li>
     </ul>
+    <b-form-input v-model="user.name"></b-form-input>
     <b-button @click="createUser">New</b-button>
   </div>
 </template>
@@ -18,12 +19,13 @@ export default {
   name: 'Users',
   data () {
     return {
-      users: []
+      users: [],
+      user: {}
     }
   },
   methods: {
     createUser: function () {
-      axios.post('http://localhost:8080/users')
+      axios.post('http://localhost:8080/users', this.user)
         .then(response => axios.get('http://localhost:8080/users'))
         .then(response => (this.users = response.data))
     }

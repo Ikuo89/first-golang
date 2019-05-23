@@ -7,5 +7,7 @@ services:
     volumes:
       - sync_admin:/app
 volumes:
-  sync_volume:
+  sync_app:
+    external: true
+  sync_admin:
     external: true
