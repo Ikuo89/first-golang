@@ -6,6 +6,7 @@
         <router-link :to="{ path: 'users/' + user.ID }">
           {{ user.ID }} {{ user.name }}
         </router-link>
+        <b-button @click="deleteUser(user.ID)">Delete</b-button>
       </li>
     </ul>
     <b-form-input v-model="user.name"></b-form-input>
@@ -26,6 +27,11 @@ export default {
   methods: {
     createUser: function () {
       axios.post('http://localhost:8080/users', this.user)
+        .then(response => axios.get('http://localhost:8080/users'))
+        .then(response => (this.users = response.data))
+    },
+    deleteUser: function (id) {
+      axios.delete('http://localhost:8080/users/' + id)
         .then(response => axios.get('http://localhost:8080/users'))
         .then(response => (this.users = response.data))
     }
