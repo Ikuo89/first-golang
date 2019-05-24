@@ -1,0 +1,4 @@
+development:
+  dialect: postgres
+  dir: db/migrations
+  datasource: postgresql://root:root@db:5432/chat?sslmode=disable

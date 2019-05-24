@@ -5,8 +5,6 @@ import (
   "os"
   "github.com/jinzhu/gorm"
   _ "github.com/lib/pq"
-
-  "github.com/projects/app/model"
 )
 
 var db = NewDbConnection()
@@ -22,7 +20,6 @@ func NewDbConnection() *gorm.DB {
     panic(err.Error())
   }
 
-  db.AutoMigrate(model.User{})
   db.LogMode(true)
 
   return db
