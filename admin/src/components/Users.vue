@@ -1,16 +1,20 @@
 <template>
   <div>
     <h1>Users</h1>
-    <ul>
-      <li v-for="user in users" :key="user.ID">
-        <router-link :to="{ path: 'users/' + user.ID }">
-          {{ user.ID }} {{ user.name }}
+    <b-table striped hover :items="users" :fields="fields">
+      <template slot="actions" slot-scope="row">
+        <router-link :to="{ path: 'users/' + row.item.id }">
+          detail
         </router-link>
-        <b-button @click="deleteUser(user.ID)">Delete</b-button>
-      </li>
-    </ul>
-    <b-form-input v-model="user.name"></b-form-input>
-    <b-button @click="createUser">New</b-button>
+        <b-button @click="deleteUser(row.item.id)">Delete</b-button>
+      </template>
+    </b-table>
+    <div class="container">
+      <div class="row">
+        <b-form-input v-model="user.name" class="col-sm-8"></b-form-input>
+        <b-button @click="createUser" class="col-sm-4">New</b-button>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -21,7 +25,14 @@ export default {
   data () {
     return {
       users: [],
-      user: {}
+      user: {},
+      fields: [
+        { key: 'id', lable: 'ID' },
+        { key: 'name', lable: 'Name' },
+        { key: 'created_at', lable: 'Created At' },
+        { key: 'updated_at', lable: 'Updated At' },
+        { key: 'actions', lable: 'Actions' }
+      ]
     }
   },
   methods: {

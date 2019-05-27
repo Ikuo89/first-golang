@@ -1,9 +1,15 @@
 <template>
   <div>
     <h1>WebSocket User</h1>
-    <b-form-input v-model="sendText"></b-form-input>
-    <b-button @click="send">Send</b-button>
-    <b-form-textarea readonly v-model="socketResponse" rows="20"></b-form-textarea>
+    <div class="container">
+      <div class="row">
+        <b-form-input class="col-sm-10" v-model="sendText"></b-form-input>
+        <b-button class="col-sm-2" @click="send">Send</b-button>
+      </div>
+      <div class="row">
+        <b-form-textarea readonly v-model="socketResponse" rows="20"></b-form-textarea>
+      </div>
+    </div>
   </div>
 </template>
 

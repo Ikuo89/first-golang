@@ -14,3 +14,8 @@
 ```bash
 ./bin/docker-remove
 ```
+
+## migrate
+```bash
+docker-compose exec app go run ./db/migrate.go
+```

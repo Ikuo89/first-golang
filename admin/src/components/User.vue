@@ -1,9 +1,24 @@
 <template>
   <div>
     <h1>User</h1>
-    <b-form-input v-model="user.name"></b-form-input>
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-4">ID</div><div class="col-sm-8">{{ user.id }}</div>
+      </div>
+      <div class="row">
+        <div class="col-sm-4">Name</div><div class="col-sm-8"><b-form-input v-model="user.name"></b-form-input></div>
+      </div>
+      <div class="row">
+        <div class="col-sm-4">Created At</div><div class="col-sm-8">{{ user.created_at }}</div>
+      </div>
+      <div class="row">
+        <div class="col-sm-4">Updated At</div><div class="col-sm-8">{{ user.updated_at }}</div>
+      </div>
+      <div class="row">
+        <div class="col-sm-4">WebSocket Page</div><div class="col-sm-8"><router-link :to="{ path: '/users/' + user.id + '/ws' }">ws</router-link></div>
+      </div>
+    </div>
     <b-button @click="updateUser">Update</b-button>
-    <router-link :to="{ path: 'users/' + user.ID + '/ws' }">ws</router-link>
   </div>
 </template>
 
